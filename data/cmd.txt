@@ -1,0 +1,2 @@
+testing@akshay-inspiron-3584:/media/testing/OS/study_material/ab-new-core-cron-job/cronjob/oem_price_stats_update$ elastic_host=166.70.118.99 elastic_port=31920 country=us sub_vertical_id=122 gcs_bucket=oem_price_stats ruby oem_price_stats.rb
+

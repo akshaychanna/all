@@ -1,0 +1,39 @@
+# Pipenv commands
+
+
+pipenv install package_name : to install pip packages.
+	pipenv install elasticsearch
+
+pip3 freeze : list the all installed pip
+	ex: pip3 freeze
+	camelcase==0.2
+	elasticsearch==7.5.1
+	urllib3==1.25.8
+
+removing packages :
+	pipenv uninstall camelcase
+	Now check the installed packages
+	pip3 freeze 
+	elasticsearch==7.5.1
+	urllib3==1.25.8
+
+pipenv lock -r 	: list the installed pip packages
+	pipenv lock -r
+	-i https://pypi.org/simple
+	camelcase==0.2
+	elasticsearch==7.5.1
+	urllib3==1.25.8
+NOTE:
+ 	You can check Pipfile to see installed packages and version 
+
+requirements.txt file is same as Gemfile in ruby
+
+ex:  vi requirements.txt
+	elasticsearch
+	camelcase
+
+in ruby we install all packages in Gemfile using : bundle install
+in python we install all packages in requirements.txt using : pipenv install -r ./requirements.txt
+
+
+

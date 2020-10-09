@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: testing
+spec:
+  selector:
+    matchLabels:
+      app: testing
+  template:
+    metadata:
+      labels:
+        app: testing
+    spec:
+      containers:
+      - name: testing
+        image: alpine
+        command: ["/bin/bash", "-c", "some-commands"]
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
+      -env:
+        - name:  USERNAME
+          valueFrom:
+            secretKeyRef:
+              name:  my_secretes
+              key:  username
+        - name:  PASSWORD_MY
+          valueFrom:
+            secretKeyRef:
+              name:  my_secretes
+              key:  password

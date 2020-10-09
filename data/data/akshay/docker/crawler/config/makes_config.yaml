@@ -1,0 +1,9 @@
+makes:
+  mazda:
+    crowler_file: "mazda_crawler.rb"
+    crawler_class: "MazdaCrawler"
+
+  kia:
+    crowler_file: "kia_crawler.rb"
+    crawler_class: "KiaCrawler"
+    

@@ -1,0 +1,28 @@
+Q14: Explain basic Docker usage workflow
+Topic: Docker
+Difficulty: ⭐⭐⭐
+Answer:
+
+Everything starts with the Dockerfile. The Dockerfile is the source code of the Image.
+Once the Dockerfile is created, you build it to create the image of the container. The image is just the "compiled version" of the "source code" which is the Dockerfile.
+Once you have the image of the container, you should redistribute it using the registry. The registry is like a git repository -- you can push and pull images.
+Next, you can use the image to run containers. A running container is very similar, in many aspects, to a virtual machine (but without the hypervisor).
+
+
+Q15: What is the difference between Docker Image and Layer?
+Topic: Docker
+Difficulty: ⭐⭐⭐
+Answer:
+
+Image: A Docker image is built up from a series of read-only layers
+Layer: Each layer represents an instruction in the image’s Dockerfile.
+The below Dockerfile contains four commands, each of which creates a layer.
+
+FROM ubuntu:15.04
+COPY . /app
+RUN make /app
+CMD python /app/app.py
+
+Importantly, each layer is only a set of differences from the layer before it.
+
+

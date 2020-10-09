@@ -1,0 +1,15 @@
+db.www.insertOne({
+    "_id":1,
+    "name":"raw",
+    "comments":[
+                {
+                    "u_name":"akshay",
+                    "comment":"awesome video"
+                },
+                {
+                    "u_name":"amar",
+                    "comment":"amazingggg.."
+                }
+                ],
+     "status":"done"
+            })

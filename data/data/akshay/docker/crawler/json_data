@@ -1,0 +1,15 @@
+
+[1mFrom:[0m /home/zerebral/akshay/ruby/crawler/scripts/mazda_crawler.rb @ line 13 MazdaCrawler#get_data:
+
+     [1;34m8[0m: 	[32mdef[0m [1;34mget_data[0m
+     [1;34m9[0m: 		puts [31m[1;31m"[0m[31min get_data #{@make}[0m[31m[1;31m"[0m[31m[0m
+    [1;34m10[0m: 		curl_data = [33m[1;33m`[0m[33mcurl 'https://www.mazdausa.com/api/inventorysearch' -H 'Accept: application/json, text/javascript, */*; q=0.01' -H 'Referer: https://www.mazdausa.com/shopping-tools/inventory/results' -H 'Origin: https://www.mazdausa.com' -H 'X-Requested-With: XMLHttpRequest' -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.75 Safari/537.36' -H 'Sec-Fetch-Mode: cors' -H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8' --data 'ResultsPageSize=12&ResultsParameterFilter=&ResultsSortAttribute=Year&ResultsSortOrder=asc&ResultsStart=1&TimeSearchPerformed=&Vehicle%5BDealerId%5D%5B%5D=42166&Vehicle%5BDealerId%5D%5B%5D=42176&Vehicle%5BDealerId%5D%5B%5D=42031&Vehicle%5BStatus%5D%5B%5D=11&Vehicle%5BType%5D%5B%5D=n&Vehicle%5BYear%5D%5B%5D=2020&Vehicle%5BCarline%5D%5B%5D=m3h&Vehicle%5Byear%5D%5B%5D=2020&Vehicle%5BsortTitle%5D%5B%5D=Distance%3A+Near+to+Far&Vehicle%5Bcond%5D%5B%5D=n&resultsSortParameter%5B0%5D%5BresultsSortAttribute%5D=DEALERID&resultsSortParameter%5B0%5D%5BresultsSortOrder%5D=asc&resultsSortParameter%5B1%5D%5BresultsSortAttribute%5D=price&resultsSortParameter%5B1%5D%5BresultsSortOrder%5D=asc&resultsSortParameter%5B2%5D%5BresultsSortAttribute%5D=Year&resultsSortParameter%5B2%5D%5BresultsSortOrder%5D=desc&resultsSortParameter%5B3%5D%5BresultsSortAttribute%5D=Mileage&resultsSortParameter%5B3%5D%5BresultsSortOrder%5D=asc&sortVal=DEALERID%7Casc%2Cprice%7Casc%2CYear%7Cdesc%2CMileage%7Casc&sortTitle=Distance%3A+Near+to+Far' --compressed[1;33m`[0m[33m[0m
+    [1;34m11[0m: 		[1;34m#binding.pry[0m
+    [1;34m12[0m: 		json_data  = [1;34;4mJSON[0m.parse(curl_data)
+ => [1;34m13[0m: 		binding.pry
+    [1;34m14[0m: 		[1;34m#return json_data[0m
+    [1;34m15[0m: 		data_of_arr = json_data[[31m[1;31m"[0m[31mvehicles[1;31m"[0m[31m[0m]
+    [1;34m16[0m: 		[1;34m#return data_of_arr[0m
+    [1;34m17[0m: 		data_hash = {}
+    [1;34m18[0m: 		data_arr = []
+

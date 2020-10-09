@@ -1,0 +1,14 @@
+student:
+  name:"akshay"
+  age:24
+  address:
+    city:"solapur"
+    state:"maharashtra"
+    country:"india"
+    mobile:8624845850
+
+friend:
+  name:"amar"
+  age:24
+  
+	

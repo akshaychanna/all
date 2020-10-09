@@ -1,0 +1,1018 @@
+curl -v -X POST 'http://localhost:8080/get_extraction_config' --data "{\"seed_id\": \"5492\",\"seed_group_id\": \"189\",\"sub_vertical_id\": \"5\",\"vertical_id\": \"1\"}" -H "Content-Type: application/json"
+
+#delete index 
+curl -X DELETE "http://192.168.1.206:31923/logstash-2019.02.15"
+
+#aggregation on crawl_status 
+GET /details_page_task/_search
+{
+  "aggs": {
+    "group_by_crawl_status": {
+      "terms": {
+        "field": "crawl_status"
+      }
+    }
+  }
+}
+
+#match all the records with crawl_status as executing and aggregation on domain
+GET /details_page_task/_search
+{
+  "size": 0,
+  "query": {"bool": {"must": [
+        {"term": {
+            "crawl_status": "executing"
+          }}
+      ]}}, 
+  "aggs": {
+    "group_by_domain": {
+      "terms": {
+        "field": "domain",
+        "size": 100
+      }
+    }
+  }
+}
+
+#delete by aggregating data
+POST /seed_target/_delete_by_query
+{
+  "size": 0,
+  "query": {"term": {
+    "sub_vertical.id": {
+      "value": "5"
+    }
+  }},
+  "aggs": {
+    "group_bye_seed_grp": {
+      "terms": {
+        "field": "seed_group.id",
+        "size": 1000
+      }
+    }
+  }
+}
+
+#search on multiple matching terms
+GET /seed_group/_search
+{
+  "query": {
+    "terms": {
+      "_id": [
+        "190",
+        "191",
+        "188"
+      ]
+    }
+  }
+}
+
+#delete on multiple matching terms
+POST /seed_group/_delete_by_query
+{
+  "query": {
+    "terms": {
+      "_id": ["190", "191", "188", "185", "187", "189", "184", "186"]
+    }
+  }
+}
+
+#search using wildcard
+GET /seed_group/_search
+{
+  "query": {
+    "wildcard": { "name": "*auction*" }
+  }
+}
+
+#unique bucket count after aggregation (( specific field types ex: brand -- honda , mazda then answer is 2 bcoz brand filed have 2 types of values ))\
+
+GET /details_page_task/_search
+{
+  "size": 0,
+  "aggs": {
+    "total_uniq_domain": {
+      "cardinality": {
+        "field": "domain"
+      }
+    }
+  }
+}
+
+
+
+#exclude the genuine errors
+
+GET /seed_target/_search
+{
+    "query": {
+      "bool": {
+        "must": [
+          {"wildcard": {
+            "crawl_status": {
+              "value": "*robot_end*"
+            }
+          }}
+        ],
+        "must_not": [
+          {"wildcard": {
+            "crawl_status": {
+              "value": "*curl_bot.rb:250*"
+            }
+          }},
+          {"wildcard": {
+            "crawl_status": {
+              "value": "*curl_bot.rb:245*"
+            }
+          }},
+          {"wildcard": {
+            "crawl_status": {
+              "value": "*curl_bot.rb:137*"
+            }
+          }},
+          {"wildcard": {
+            "crawl_status": {
+              "value": "*curl_bot.rb:108*"
+            }
+          }},
+          {"wildcard": {
+            "crawl_status": {
+              "value": "*curl_bot.rb:148*"
+            }
+          }}
+        ]
+      }
+    }
+}
+
+
+#queued and aggregation on sub_vertical
+GET /seed_target/_search
+{
+  "size": 0, 
+  "query": {
+    "term": {
+      "crawl_status": {
+        "value": "queued"
+      }
+    }
+  },
+  "aggs": {
+    "group_by_crwl_status": {
+      "terms": {
+        "field": "sub_vertical.id",
+        "size": 10
+      }
+    }
+  }
+}
+
+#range query / filter seed targets whose last run time is grater then now - 1d and less then now
+GET /seed_target/_search
+{
+  "query": {
+    "range": {
+      "last_run_time": {
+         "gte" : "now-1d/d",
+         "lt" :  "now/d"
+      }
+    }
+  }
+}
+
+#search on multiple fields use bool query
+GET /seed_target/_search
+{
+  "query": {
+    "bool": {
+      "must_not": [
+        {
+          "term": {
+            "last_run_time": {
+              "value": "1547942400000"
+            }
+          }
+        }, 
+        {
+          "term": {
+            "domain": {
+              "value": "www.gregorypoole.com"
+            }
+          }
+        }
+      ],
+      "must": [
+        {
+          "term": {
+            "sub_vertical.id": {
+              "value": "6"
+            }
+          }
+        },
+        {
+          "term": {
+            "crawl_status": {
+              "value": "RuntimeError"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "group_by_crawl_status": {
+      "terms": {
+        "field": "crawl_status",
+        "size": 10
+      }
+    }
+  }
+}
+
+
+POST /seed_target/_update_by_query
+{
+  "query": {
+    "match_all": {}
+  }, 
+  "script": {
+    "source": "ctx._source['proxy_pref'] = [[\"id\": \"shader\", \"priority\": \"1\" ],[ \"id\": \"squid\", \"priority\": \"2\" ],[ \"id\": \"none\", \"priority\": \"3\" ]]"
+  }
+}
+
+
+
+
+
+
+###
+###
+      select document with caline as a pending and upadte those doc with carline as ready
+
+###
+####
+
+POST seed_target/_update_by_query
+{
+  "query":{
+    "bool":{
+      "must":{
+        "match":{
+          "carline": "pending"
+        }
+      }
+    }
+  },
+  "script": {
+    "source": "ctx._source['carline'] = 'ready'"
+  }
+}
+
+######################################################################################################################
+
+POST /seed_target/_update_by_query
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "sub_vertical.id": {
+              "value": "1"
+            }
+          }
+        },
+        {
+          "term": {
+            "domain": {
+              "value": "www.autobidmaster.com"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "script": {
+    "source": "ctx._source['proxy_pref'] = 'pending'"
+  }
+}
+
+#update max_allowed for selected domain
+POST /seed_group/_update_by_query
+{
+  "query": {
+    "terms": {
+      "_id": ["197", "204", "224", "216", "199", "202", "243", "192", "246", "214", "218", "244", "245", "196", "211", "219", "194", "209", "193", "198", "217", "195", "201", "205", "206", "207", "208", "212", "213", "215", "220", "222", "226", "228", "231"]
+    }
+  },
+  "script": {
+    "source": "ctx._source['max_pickup_allowed'] = 5"
+  }
+}
+
+#range query inside filter and term
+GET /seed_target/_search
+{
+  "query": {
+    "bool": {
+      "must":
+        {
+          "term": 
+          {
+            "sub_vertical.id": {
+              "value": "5"
+            }
+          }
+        },
+        "filter": {
+          "range": {
+            "last_run_time": {
+              "gte": "now-1d/d",
+              "lte": "now"
+            }
+          }
+        }
+    }
+  }
+}
+
+#get all the records whose domains is equal to hanford.craigslist.org
+#two fields value check[equal, not equal, grater then, less then]
+GET /details_page_task/_search
+{
+    "query": {
+        "bool" : {
+            "filter" : {
+                "script" : {
+                    "script" : {
+                        "source": "doc['domain'].value == 'hanford.craigslist.org'",
+                        "lang": "painless"
+                     }
+                }
+            }
+        }
+    }
+}
+
+
+#############################################
+select docs with gender as female and show those doc which have cust id gte to 25 and lte 40
+
+
+GET kibana_sample_data_ecommerce/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "customer_gender": "FEMALE"
+          }
+        }
+      ],
+      "filter": {
+        "range": {
+          "customer_id": {
+            "gte": 25,
+            "lte": 40
+          }
+        }
+      }
+    }
+  }
+}
+##############################################################
+GET /seed_target/_search
+{
+  "size": 0,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "status": {
+              "value": "active"
+            }
+          }
+        }
+      ],
+      "filter": {
+        "range": {
+          "last_run_time": {
+            "gte" : "now-1d/d",
+            "lt" :  "now"
+          }
+        }
+      } 
+    }
+  },
+  "aggs": {
+    "NAME": {
+      "terms": {
+        "field": "crawl_status",
+        "size": 10
+      }
+    }
+  }
+}
+
+
+## shows docs whose two fields values are eqal/notequal as per query
+######################################################################  current and expected count are equal 
+GET /seed_target/_search
+{
+   "query": {
+    "bool": {
+      "filter": {
+        "script": {
+          "script": {
+            "source": "doc['expected_count'] != null && doc['curr_count'].value == doc['expected_count'].value",
+            "lang": "painless"
+          }
+        }
+      }
+    }
+  }
+}
+################################################################ DistanceMiles not equal to dayOfWeek 
+GET kibana_sample_data_flights/_search
+{
+  "query": {
+    "bool": {
+      "filter": {
+        "script": {
+          "script": {
+            "source": "doc['DistanceMiles'].value != doc['dayOfWeek'].value",
+            "lang": "painless"
+          }
+        }
+      }
+    }
+  }
+}
+
+
+
+############ CREATING GROUPS with field ####################################################################################################
+
+GET kibana_sample_data_flights/_search
+{
+  "size": 0, 
+  "aggs": {
+    "NAME": {
+      "adjacency_matrix": {
+        "filters": {
+          "group1":{
+            "terms": {
+            "OriginCityName": [ "Rome" , "London" , "Quito" , "Osaka", "Seoul", "Tokyo" ]
+            }
+          },
+          "group2":{
+            "terms":{
+            "OriginCityName": [ "Buenos Aires", "Bogota", "Shanghai", "Milan"]
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+*****OUTPUT : 
+ {
+  "took" : 27,
+  "timed_out" : false,
+  "_shards" : {
+    "total" : 1,
+    "successful" : 1,
+    "skipped" : 0,
+    "failed" : 0
+  },
+  "hits" : {
+    "total" : {
+      "value" : 10000,
+      "relation" : "gte"
+    },
+    "max_score" : null,
+    "hits" : [ ]
+  },
+  "aggregations" : {
+    "NAME" : {
+      "buckets" : [
+        {
+          "key" : "group1",
+          "doc_count" : 1892
+        },
+        {
+          "key" : "group2",
+          "doc_count" : 994
+        }
+      ]
+    }
+  }
+}
+
+################################################################################################################################################
+
+#create the groups with the collection of crawl status
+GET /seed_target/_search
+{
+  "size": 0, 
+  "aggs": {
+    "NAME": {
+      "adjacency_matrix": {
+        "filters": {
+          "group_1": {
+            "terms": {
+              "crawl_status": ["Inv_NoListingsOnPage1", "SeedFailedToLoad", "Success-WithNPL", "FieldExtractionFailed", "RuntimeError", "Success-RepeatHash", "Net::ReadTimeout", "PaginatorConfigNotFound", "MoreListingsThanExpected"]
+            }
+          },
+          "group_2": {
+            "terms": {
+              "crawl_status": ["pending"]
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+#####################################################################################group all status other then pending
+GET /seed_target/_search
+{
+  "size": 0,
+  "aggs": {
+    "NAME": {
+      "filters": {
+        "other_bucket": true, 
+        "filters": {
+          "group_1": {
+            "term": {
+              "crawl_status": "pending"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+it will give 2 groups...... 1.group1
+			    2. other group consist of remaining except group1
+
+
+#############################################################################################################
+
+#date histogram aggregation
+GET /seed_target/_search
+{
+  "size": 0,
+  "aggs": {
+    "NAME": {
+      "composite": {
+        "sources": [
+          {
+            "date": {
+              "date_histogram": {
+                "field": "last_run_time",
+                "interval": "1h"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+
+GET /seed_crawl_log/_search
+{
+  "size": 0,
+  "aggs": {
+    "number_of_crawls_completed": {
+      "terms": {
+      "field": "seed_target.id",
+        "min_doc_count": 3,
+         "size": 100
+        },
+       "aggs": {
+        "duplicateDocuments": {
+           "top_hits": {}
+         }
+      }
+    }
+  }
+}
+
+POST /seed_target/_update_by_query
+{
+  "query": {
+    "bool": {
+      "must_not": {
+        "exists": {
+          "field": "seed_group.id"
+        }
+      }
+    }
+  },
+  "script": {
+    "source": "ctx._source['status'] = 'inactive'"
+  }
+}
+
+
+PUT vertical_data_1_1_srp/_mapping/_doc 
+{
+  "properties": {
+    "dp_url": {
+      "type": "keyword"
+    }
+  }
+}
+
+curl "http://166.70.118.121:30401/get_extraction_config"  -L --data '{"seed_id":"12709","seed_target_id":"34959","seed_group_id":"2195","sub_vertical_id":"16","vertical_id":"2","page":"srp"}'
+
+
+#TO REMOVE FIELD FROM DOCUMENT 
+POST /extraction_config/_update_by_query
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "exists": {
+            "field": "seed_group.id"
+          }
+        }
+      ]
+    }
+  },
+  "script": {
+    "source": """ctx._source.remove("seed_group")""",
+    "lang": "painless"
+  }
+}
+
+
+GET /seed_target/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "exists": {
+            "field": "seed_group.id"
+          }
+        }
+      ]
+    }
+  }
+}
+
+
+POST /seed/_update_by_query
+{
+  "query": {
+    "term": {
+      "seed_group.id": {
+        "value": "2139"
+      }
+    }
+  },
+  "script": {
+    "source": "ctx._source['seed_group']['id'] = Integer.parseInt(ctx._source['seed_group']['id']) + params.count",
+    "lang": "painless",
+    "params" : {
+        "count" : 10000
+    }
+  }
+}
+
+
+POST /seed_crawl_config/_update_by_query
+{
+  "query": {
+    "term": {
+      "seed_group_id": {
+        "value": "2139100000"
+      }
+    }
+  },
+  "script": {
+    "source": "ctx._source['seed_group_id'] = Integer.parseInt(ctx._source['seed_group_id']) + params.count",
+    "lang": "painless",
+    "params" : {
+        "count" : 10000
+    }
+  }
+}
+
+
+POST /seed_crawl_log/_update_by_query
+{
+  "query": {
+    "term": {
+      "seed_group.id": {
+        "value": "2139"
+      }
+    }
+  },
+  "script": {
+    "source": "ctx._source['seed_group']['id'] = ctx._source['seed_group']['id'] + params.count",
+    "lang": "painless",
+    "params" : {
+        "count" : 10000
+    }
+  }
+}
+
+
+POST /extraction_config/_update_by_query
+{
+  "query": {
+    "term": {
+      "seed_group_id": {
+        "value": "2139"
+      }
+    }
+  },
+  "script": {
+    "source": "ctx._source['seed_group_id'] = Integer.parseInt(ctx._source['seed_group_id']) + params.count",
+    "lang": "painless",
+    "params" : {
+        "count" : 10000
+    }
+  }
+}
+
+
+
+
+
+POST /seed_group/_delete_by_query
+{
+  "query": {
+    "terms": {
+      "_id": ["52", "48", "51", "49", "50", "59", "57", "55", "54", "58", "53", 
+              "56", "29", "26", "30", "33", "32", "34", "2220", "35", "27", "2344", "28", "31", 
+              "61", "2214", "2221", "2267", "2276", "2278", "2264", "2308", "2279", 
+              "2270", "2290", "2292", "2286", "2338", "2333", "2326", "2328", "44", "60", 
+              "2320", "2291", "2324", "2321", "2327", "2325", "2315", "2313", "2348", "2349", 
+              "2310", "2314", "2275", "42", "2297", "2304", "2306", "2322", "2311", "2213", 
+              "2365", "2364", "2262", "2268", "2294", "2295", "2332", "2316", "2222", "2288", 
+              "43", "2319", "2212", "2342", "2300", "2347", "2263", "2289", "2336", "2307", "2330", 
+              "2331", "2334", "2337", "2287", "2305", "2299", "2303", "2277", "2271", "2285", 
+              "2282", "2280", "2281", "2273", "2309", "2284", "2283", "2274", "2312", "2317", 
+              "2318", "2269", "2298", "2266", "2265", "2272", "2296", "2335", "2329", 
+              "47", "45", "2323", "2293", "2301", "2302", "2346", "2363"]
+    }
+  }
+}
+
+
+curl -X GET "http://166.70.118.122:31925/_cluster/health"
+
+curl -X DELETE 'http://localhost:9200/logstash-2019.07.08'
+
+
+curl -XPUT localhost:9200/_cluster/settings -H 'Content-Type: application/json' -d '{ "defaults": { 
+"threadpool": {
+    "write": {
+        "queue_size": 10000
+    }
+}}}'
+
+curl -XPUT localhost:9200/_cluster/settings -H 'Content-Type: application/json' -d '{ "transient" : { "threadpool.write.queue_size" : 1000 } }'
+
+curl -u admin:z3r3br@l -XPUT http://166.70.118.117:31920/_cluster/settings -H 'Content-Type: application/json' -d '{ "persistent" : { "search.max_buckets" : 100000 } }'
+
+curl -X PUT "localhost:9200/_cluster/settings?flat_settings=true" -H 'Content-Type: application/json' -d'
+{
+    "persistent" : {
+        "threadpool.write.queue_size" : 10000
+    },
+    
+    "transient" : {
+        "threadpool.write.queue_size" : 10000
+    }
+}
+'
+
+curl -XPUT localhost:9200/_cluster/settings -d '{"transient" : {"threadpool.index.queue_size":500}, "persistent": {"threadpool.index.queue_size":500} }'
+
+
+
+POST /seed_target/_update_by_query
+{
+  "query": {
+    "match_all": {}
+  },
+  "script": {
+    "source": """ctx._source.remove("lastRunDuration")""",
+    "lang": "painless"
+  }
+}
+
+
+cluster.thread_pool.write.queue_size: 10000
+cluster.thread_pool.write.size: 64
+cluster.thread_pool.get.queue_size: 10000
+cluster.thread_pool.get.size: 64
+
+
+curl -XPUT "http://localhost:15000/version_sequence/_doc/seed_group?version=2397&version_type=external" -H 'Content-Type: application/json' -d'
+{
+  
+}'
+
+
+curl -XPOST localhost:9200/_update/153 -d '{
+    "script" : "ctx._source.alias = updated_nested_user",
+    "params" : {
+        "updated_nested_user" : {"one" : 1, "two" : 2, "three" : 3}
+    }
+}'
+
+
+curl -X POST "localhost:9200/seed/_search?size=0" -H 'Content-Type: application/json' -d'
+{
+    "aggs" : {
+        "max_price" : { "max" : { "field" : 'Integer.parseInt(doc["_id"].value)' } }
+    }
+}
+'
+
+
+GET /seed_target/_update_by_query
+{
+  "query": {
+    "term": {
+      "_id": {
+        "value": "1389788"
+      }
+    }
+  },
+  "script": {
+    "source": "ctx._source['proxy_pref'] = [[\"id\": \"shader\", \"priority\": \"1\" ],[ \"id\": \"squid\", \"priority\": \"2\" ],[ \"id\": \"none\", \"priority\": \"3\" ]]; ctx._source['runtime_error'] = ''; ctx._source['last_known_worker'] = 'unknown'; ctx._source['last_run_end_time'] = 1547942400000; ctx._source['last_run_duration'] = 0; ctx._source['environment'] = 'curl'"
+  }
+}
+
+
+curl -X PUT "localhost:9200/make_model_map" -H 'Content-Type: application/json' -d'
+{
+    "mappings" : {
+        "properties" : {
+            "vertical" : { "type" : "text" }
+        }
+    }
+}
+'
+
+
+De-duping on values in multiple fields
+
+curl -XGET 'http://localhost:9200/employeeid/info/_search?pretty=true' -d '{
+  "size": 0,
+  "aggs": {
+    "duplicateCount": {"terms": {
+      "script": "doc['name'].values + doc['employeeID'].values+doc['organisation'].values",
+      "min_doc_count": 2
+    },      
+    "aggs": {}
+      "duplicateDocuments": {
+        "top_hits": {}
+      }
+    }
+  }
+}'
+
+
+#nested mapping update
+PUT seed/_mapping/_doc?include_type_name=true
+{
+  "properties": {
+    "contact": {
+      "type": "nested",
+      "properties": {
+        "emails": {
+          "type": "keyword"
+        },
+        "phones": {
+          "type": "keyword"
+        },
+        "cards": {
+          "type": "keyword"
+        }
+      }
+    }
+  }
+}
+
+#nested aggregation
+GET vertical_data_1_srp/_search
+{
+    "query": {
+      "match_all": {}
+    },
+    "aggs" : {
+      "history_wrapper" : {
+        "nested" : {
+          "path" : "history_wrapper_response"
+        },
+        "aggs" : {
+        "history_wrapper_response" : { 
+          "terms" : {
+           "field": "history_wrapper_response.status"
+        }
+        }
+      }
+    }
+  }
+}
+
+#for one day data
+GET /vertical_data_13_dp/_search
+{
+  "track_total_hits": true,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "terms": {
+            "seed_group.id": [
+              "12395",
+              "12397"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "NAME": {
+      "composite": {
+        "sources": [
+          {
+            "date": {
+              "date_histogram": {
+                "field": "created_at",
+                "interval": "1d"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+
+curl -X POST "localhost:9200/my_source_index/_shrink/my_target_index?pretty" -H 'Content-Type: application/json' -d'
+{
+  "settings": {
+    "index.number_of_replicas": 1,
+    "index.number_of_shards": 1
+  }
+}
+'
+
+#Search and REplace 
+
+POST /seed_target/_update_by_query
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "_id": "16168"
+          }
+        }
+      ]
+    }
+  },
+  "script": {
+    "source": "ctx._source['url'] = ctx._source['url'].replace('http://honda','http://www')"
+  }
+}
+
+
+
+Project	:  LAB AUTOMATION SYSTEM                     
+Team Size: 3
+Project Description:
+                                  	Main object of this project is to reduce the Electricity. In this project we are controlling the PC's. Time(Turn ON and OFF) will be set on web page which is created by HTML. Once time is submitted will receive by the WIFI module(esp8266) at receiver section and according to time PC's are turn ON and OFF automatically.
+
+
+
+
+
+PERSONAL PROFILE
+        Name			 :  Akshay Narayan  Channa 
+        Sex/Marital status	 :  Male/Single
+        Nationality		 :  Indian
+        Date of Birth		 :  07-06-1994
+        Present Address	 	 :  Yousufguda 
+ 				    Hyderabad- 500038
+				    Telangana , India.
+

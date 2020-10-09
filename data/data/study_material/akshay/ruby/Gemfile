@@ -1,0 +1,7 @@
+source 'https://rubygems.org'
+gem 'rails'
+gem 'logger'
+gem 'pry'
+gem 'elasticsearch'
+gem 'rainbow'
+gem 'activerecord', '4.1.0'

@@ -1,0 +1,157 @@
+{
+	"id": "44d87fcd-0344-4700-a17e-6fd84a8c80d8",
+	"name": "postman test collection",
+	"allTests": [],
+	"timestamp": "2019-12-17T06:02:35.563Z",
+	"collection_id": "40eccb79-c101-437d-aef0-bdc1e54e98e4",
+	"folder_id": 0,
+	"target_type": "collection",
+	"environment_id": "0",
+	"data": [],
+	"delay": 2500,
+	"count": 3,
+	"collection": {
+		"id": "40eccb79-c101-437d-aef0-bdc1e54e98e4",
+		"name": "postman test collection",
+		"order": [
+			"a386c697-9ac4-4d74-aef7-ac825877c1fe",
+			"aa2c8eda-7601-428c-9c60-17a260c05555"
+		],
+		"folders_order": [],
+		"isFavorite": false
+	},
+	"folder": null,
+	"environment": null,
+	"globals": [
+		{
+			"key": "url",
+			"value": "https://jsonplaceholder.typicode.com",
+			"enabled": true
+		}
+	],
+	"results": [
+		{
+			"name": "{{url}}/users",
+			"id": "a386c697-9ac4-4d74-aef7-ac825877c1fe",
+			"totalTime": 0,
+			"responseCode": {
+				"code": 200,
+				"name": "OK",
+				"detail": {
+					"name": "OK",
+					"detail": "Standard response for successful HTTP requests. The actual response will depend on the request method used. In a GET request, the response will contain an entity corresponding to the requested resource. In a POST request the response will contain an entity describing or containing the result of the action."
+				}
+			},
+			"tests": {
+				"Status code is 200": true,
+				"Check if user with id1 is Leanne Graham": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 3,
+					"fail": 0
+				},
+				"Check if user with id1 is Leanne Graham": {
+					"pass": 3,
+					"fail": 0
+				}
+			},
+			"times": [
+				"293",
+				"203",
+				"214"
+			],
+			"allTests": [
+				{
+					"Status code is 200": true,
+					"Check if user with id1 is Leanne Graham": true
+				},
+				{
+					"Status code is 200": true,
+					"Check if user with id1 is Leanne Graham": true
+				},
+				{
+					"Status code is 200": true,
+					"Check if user with id1 is Leanne Graham": true
+				}
+			],
+			"time": "214",
+			"totalRequestTime": 710,
+			"iterationResults": {}
+		},
+		{
+			"name": "{{url}}/users",
+			"id": "aa2c8eda-7601-428c-9c60-17a260c05555",
+			"totalTime": 0,
+			"responseCode": {
+				"code": 201,
+				"name": "Created",
+				"detail": {
+					"name": "Created",
+					"detail": "The request has been fulfilled and resulted in a new resource being created."
+				}
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				"551",
+				"465",
+				"584"
+			],
+			"allTests": [
+				{},
+				{},
+				{}
+			],
+			"time": "584",
+			"totalRequestTime": 1600,
+			"iterationResults": {}
+		}
+	],
+	"totalPass": 6,
+	"totalFail": 0,
+	"totalTime": 2310,
+	"lifecycle": "done",
+	"requests": [
+		{
+			"name": "{{url}}/users",
+			"id": "a386c697-9ac4-4d74-aef7-ac825877c1fe",
+			"url": "https://jsonplaceholder.typicode.com/users",
+			"time": "214",
+			"responseCode": {
+				"code": 200,
+				"name": "OK",
+				"detail": {
+					"name": "OK",
+					"detail": "Standard response for successful HTTP requests. The actual response will depend on the request method used. In a GET request, the response will contain an entity corresponding to the requested resource. In a POST request the response will contain an entity describing or containing the result of the action."
+				}
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 3,
+					"fail": 0
+				},
+				"Check if user with id1 is Leanne Graham": {
+					"pass": 3,
+					"fail": 0
+				}
+			}
+		},
+		{
+			"name": "{{url}}/users",
+			"id": "aa2c8eda-7601-428c-9c60-17a260c05555",
+			"url": "https://jsonplaceholder.typicode.com/users",
+			"time": "584",
+			"responseCode": {
+				"code": 201,
+				"name": "Created",
+				"detail": {
+					"name": "Created",
+					"detail": "The request has been fulfilled and resulted in a new resource being created."
+				}
+			},
+			"testPassFailCounts": {}
+		}
+	],
+	"synced": false
+}
