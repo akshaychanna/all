@@ -20,7 +20,9 @@ GitHub login :
 Workbench :
     ID       : dc236c98-3302-457d-90fb-8b8b104052d5
     Email Id : akshay.narayanchanna-odc@partner.import.io
+    link : https://workbench.import.io/users
 
 AWS login:
     User : akshay.narayanchanna-odc@partner.import.io
     pass : Daddy@1234
+    link : https://558430142278.signin.aws.amazon.com/console
