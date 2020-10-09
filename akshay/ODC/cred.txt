@@ -1,0 +1,26 @@
+ODC Login : 
+    Email Id : c.akshay@olivedatacentre.com
+    Password : akshu@007
+
+WebEx Teams: 
+    User Id  : akshay channa
+    Email Id : c.akshay@olivedatacentre.com
+    Password : akshu@007
+    WebEx link (chrome) : https://web.webex.com/spaces/aHR0cHM6Ly9jb252LWEud2J4Mi5jb20vY29udmVyc2F0aW9uL2FwaS92MS9jb252ZXJzYXRpb25zLzQ4YTZhNmYwLTA3YWQtMTFlYi1hZTE4LWViMTNkZTA5N2E5Yw==
+
+Import Login :
+    Email Id : akshay.narayanchanna-odc@partner.import.io
+    Password : Welcome01
+
+GitHub login : 
+    User Name : channaakshay
+    Email Id  : akshay.narayanchanna-odc@partner.import.io
+    Password  : channa@007
+
+Workbench :
+    ID       : dc236c98-3302-457d-90fb-8b8b104052d5
+    Email Id : akshay.narayanchanna-odc@partner.import.io
+
+AWS login:
+    User : akshay.narayanchanna-odc@partner.import.io
+    pass : Daddy@1234
